@@ -1,0 +1,60 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, projects, site } from "@/data/site";
+import { breadcrumbSchema } from "@/utils/seo";
+
+const filters = ["All", ...new Set(projects.map((project) => project.category))];
+const usedImages = new Set<string>();
+const portfolioItems = projects
+  .flatMap((project) => project.gallery.map((image, galleryIndex) => ({ project, image, galleryIndex })))
+  .filter((item) => {
+    if (usedImages.has(item.image)) return false;
+    usedImages.add(item.image);
+    return true;
+  });
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "HN Architects Projects",
+    url: `${site.url}/projects/`,
+    primaryImageOfPage: `${site.url}${asset("hn-drive-65.webp")}`,
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Projects", url: `${site.url}/projects/` },
+  ]),
+];
+---
+
+<BaseLayout title="Luxury Architecture Portfolio in Islamabad | HN Architects" description="Explore HN Architects portfolio across luxury villas, residential architecture, commercial interiors, hospitality, office, exterior design, and 3D visualization." image={asset("hn-drive-65.webp")} schema={schema}>
+  <section class="page-hero">
+    <Picture src={asset("hn-drive-65.webp")} alt="Modern twilight villa architecture by HN Architects" class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Projects</p>
+      <h1 class="split-title">A portfolio of atmosphere, clarity, and architectural discipline.</h1>
+      <p>Browse the complete visual archive across residential, commercial, hospitality, office, luxury villas, interiors, exteriors, and visualization.</p>
+    </div>
+  </section>
+
+  <section class="section portfolio-page">
+    <div class="filter-bar" role="list" aria-label="Project filters">
+      {filters.map((filter) => <button type="button" data-filter={filter} class={filter === "All" ? "active" : ""}>{filter}</button>)}
+    </div>
+    <div class="masonry-grid" data-project-grid>
+      {portfolioItems.map((item, index) => (
+        <article class={`masonry-card reveal-card ${index % 5 === 1 || index % 5 === 4 ? "tall" : ""}`} data-category={item.project.category}>
+          <a href={`/projects/${item.project.slug}/`}>
+            <Picture src={asset(item.image)} alt={`${item.project.title} portfolio image ${item.galleryIndex + 1} by HN Architects`} class="masonry-img" />
+            <div>
+              <span>{item.project.category} / {item.project.location}</span>
+              <h2>{item.project.title}</h2>
+              <p>{item.project.story}</p>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

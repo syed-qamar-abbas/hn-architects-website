@@ -1,0 +1,63 @@
+---
+import Logo from "./Logo.astro";
+import { asset, services, site } from "@/data/site";
+const menuServices = services.slice(0, 5);
+---
+
+<header class="site-header" data-header>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="header-inner">
+    <Logo tone="light" />
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="/">Home</a>
+      <a href="/about/">About Us</a>
+      <div class="nav-cluster">
+        <a href="/services/" aria-haspopup="true">Services</a>
+        <div class="mega-menu" role="menu" aria-label="Services menu">
+          <div class="mega-cards">
+            {menuServices.map((service) => (
+              <a class="mega-card" href={`/services/${service.slug}/`} role="menuitem">
+                <img src={asset(service.navImage ?? service.image)} alt="" loading="lazy" decoding="async" />
+                <span>{service.title}</span>
+              </a>
+            ))}
+          </div>
+          <a class="mega-all" href="/services/">View all 11 services <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <a href="/projects/">Projects</a>
+      <a href="/blog/">Insights</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+    <a class="header-phone" href={`tel:${site.phone.replaceAll(" ", "")}`} aria-label={`Call ${site.phone}`}>
+      <span aria-hidden="true">&#9742;</span> {site.phoneAlt}
+    </a>
+    <a class="nav-cta magnetic" href="/contact/">Get in Touch <span aria-hidden="true">&rarr;</span></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span class="sr-only">Open menu</span>
+    </button>
+  </div>
+  <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation" hidden data-mobile-menu>
+    <a href="/">Home</a>
+    <a href="/about/">About Us</a>
+    <details class="mobile-services">
+      <summary>Services</summary>
+      <div class="mobile-services-grid">
+        {menuServices.map((service) => (
+          <a href={`/services/${service.slug}/`}>
+            <img src={asset(service.navImage ?? service.image)} alt="" loading="lazy" decoding="async" />
+            <span>{service.title}</span>
+          </a>
+        ))}
+        <a class="mobile-services-all" href="/services/">All services &rarr;</a>
+      </div>
+    </details>
+    <a href="/projects/">Projects</a>
+    <a href="/blog/">Insights</a>
+    <a href="/contact/">Contact</a>
+    <a class="mobile-menu-cta" href="/contact/">Get in Touch &rarr;</a>
+  </nav>
+</header>

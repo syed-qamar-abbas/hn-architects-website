@@ -1,0 +1,134 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, faqs, processSteps, projects, services, site } from "@/data/site";
+import { breadcrumbSchema } from "@/utils/seo";
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+const { service } = Astro.props;
+const related = services.filter((item) => item.slug !== service.slug).slice(0, 3);
+const serviceProjectCategories: Record<string, string[]> = {
+  "residential-architecture": ["Residential", "Luxury Villas"],
+  "commercial-architecture": ["Commercial", "Office", "Hospitality"],
+  "interior-design": ["Interior", "Hospitality", "Office"],
+  "exterior-design": ["Exterior", "Luxury Villas"],
+  "landscape-design": ["Residential", "Luxury Villas"],
+  "3d-visualization": ["Visualization", "Exterior"],
+  "space-planning": ["Commercial", "Office", "Residential"],
+  "construction-drawings": ["Residential", "Luxury Villas", "Commercial"],
+  renovation: ["Visualization", "Exterior", "Residential"],
+  "turnkey-projects": ["Luxury Villas", "Interior", "Commercial"],
+  "design-consultancy": ["Visualization", "Commercial", "Residential"],
+};
+const preferredCategories = serviceProjectCategories[service.slug] ?? [];
+const featuredProjects = projects.filter((project) => preferredCategories.includes(project.category));
+const serviceProjects = [...featuredProjects, ...projects.filter((project) => !featuredProjects.includes(project))].slice(0, 3);
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `${service.title} in Islamabad`,
+    provider: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName, url: site.url },
+    areaServed: ["Islamabad", "Rawalpindi", "Pakistan"],
+    description: service.deck,
+    url: `${site.url}/services/${service.slug}/`,
+    image: `${site.url}${asset(service.image)}`,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Services", url: `${site.url}/services/` },
+    { name: service.title, url: `${site.url}/services/${service.slug}/` },
+  ]),
+];
+---
+
+<BaseLayout title={`${service.title} in Islamabad | HN Architects`} description={`${service.deck} Work with HN Architects for premium ${service.title.toLowerCase()} in Islamabad and across Pakistan.`} image={asset(service.image)} schema={schema}>
+  <section class="page-hero">
+    <Picture src={asset(service.image)} alt={`${service.title} by HN Architects`} class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Service</p>
+      <h1 class="split-title">{service.title}</h1>
+      <p>{service.deck}</p>
+    </div>
+  </section>
+
+  <section class="section service-detail">
+    <div>
+      <p class="eyebrow">Overview</p>
+      <h2>Designed for decisions that matter before construction starts.</h2>
+      <p>HN Architects uses precise planning, 3D visualization, material discipline, and client collaboration to turn {service.title.toLowerCase()} into a clear, buildable design experience.</p>
+    </div>
+    <div class="benefit-stack">
+      {service.benefits.map((benefit) => <span>{benefit}</span>)}
+    </div>
+  </section>
+
+  <section class="section process">
+    <div class="section-heading compact">
+      <p class="eyebrow">Process</p>
+      <h2>From brief to confident direction.</h2>
+    </div>
+    <div class="process-grid">
+      {processSteps.map(([number, title, copy]) => (
+        <article class="process-card reveal-card">
+          <span>{number}</span>
+          <h3>{title}</h3>
+          <p>{copy}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section project-teasers">
+    <div class="section-heading">
+      <p class="eyebrow">Featured work</p>
+      <h2>Relevant design stories.</h2>
+      <a href="/projects/">All projects</a>
+    </div>
+    <div class="insight-grid">
+      {serviceProjects.map((project) => (
+        <article class="insight-card">
+          <Picture src={asset(project.image)} alt={project.title} class="insight-img" />
+          <span>{project.category}</span>
+          <h3><a href={`/projects/${project.slug}/`}>{project.title}</a></h3>
+          <p>{project.story}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section faq">
+    <div>
+      <p class="eyebrow">FAQ</p>
+      <h2>Questions clients ask early.</h2>
+    </div>
+    {faqs.map(([question, answer]) => (
+      <details>
+        <summary>{question}</summary>
+        <p>{answer}</p>
+      </details>
+    ))}
+  </section>
+
+  <section class="section related-services">
+    <div class="section-heading">
+      <p class="eyebrow">Related services</p>
+      <h2>Continue the design system.</h2>
+    </div>
+    <div class="related-grid">
+      {related.map((item) => <a href={`/services/${item.slug}/`}>{item.title}<span>{item.deck}</span></a>)}
+    </div>
+  </section>
+</BaseLayout>

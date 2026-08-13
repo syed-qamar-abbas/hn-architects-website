@@ -1,0 +1,79 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, processSteps, site } from "@/data/site";
+import { breadcrumbSchema } from "@/utils/seo";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About HN Architects",
+    description: "The story, mission, vision, and design philosophy of HN Architects in Islamabad.",
+    url: `${site.url}/about/`,
+    primaryImageOfPage: `${site.url}${asset("hn-brand-hero.webp")}`,
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "About HN Architects", url: `${site.url}/about/` },
+  ]),
+];
+---
+
+<BaseLayout title="About HN Architects | Islamabad Architecture Studio" description="Meet HN Architects, a premium Islamabad studio for architecture, interiors, facades, 3D visualization, and design consultancy." image={asset("hn-brand-hero.webp")} schema={schema}>
+  <section class="page-hero studio-hero">
+    <Picture src={asset("hn-drive-62.webp")} alt="Luxury estate villa and lawn by HN Architects" class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Studio</p>
+      <h1 class="split-title">Where vision meets architectural excellence.</h1>
+      <p>HN Architects blends visionary design, collaboration, craftsmanship, and client-centric thinking to shape residential and commercial spaces that endure.</p>
+    </div>
+  </section>
+
+  <section class="section narrative-grid">
+    <div>
+      <p class="eyebrow">Story</p>
+      <h2>Architecture as a disciplined act of imagination.</h2>
+    </div>
+    <p>Based in Islamabad, HN Architects approaches each project as a conversation between land, lifestyle, material, light, and long-term value. From intimate residential retreats to refined commercial interiors, the studio focuses on spaces that are elegant, functional, and emotionally resonant.</p>
+    <p>Every design is developed through open communication and careful visualization, so clients can participate in the process with confidence instead of guesswork.</p>
+  </section>
+
+  <section class="section studio-values">
+    {[
+      ["Vision", "To raise the standard of residential and commercial design in Pakistan through thoughtful planning, timeless materials, and precise execution."],
+      ["Mission", "To transform client aspirations into spatial experiences that inspire, perform, and age with grace."],
+      ["Philosophy", "Design reduced to what matters: proportion, light, function, craft, and the quiet confidence of restraint."],
+    ].map(([title, copy]) => (
+      <article class="value-card reveal-card">
+        <h2>{title}</h2>
+        <p>{copy}</p>
+      </article>
+    ))}
+  </section>
+
+  <section class="section studio-panel">
+    <div class="studio-brand-frame reveal-image">
+      <Picture src={asset("hn-brand-hero.webp")} alt="HN Architects branded architectural experience visual" />
+    </div>
+    <div>
+      <p class="eyebrow">Identity</p>
+      <h2>Warmth, depth, balance, timelessness.</h2>
+      <p>The brand language is built around burnt orange, copper, deep brown, charcoal, warm white, soft grey, Playfair Display, Poppins, architectural geometry, and cinematic indirect lighting.</p>
+    </div>
+  </section>
+
+  <section class="section timeline">
+    <div class="section-heading compact">
+      <p class="eyebrow">Studio rhythm</p>
+      <h2>How the work moves.</h2>
+    </div>
+    {processSteps.map(([number, title, copy]) => (
+      <article>
+        <span>{number}</span>
+        <h3>{title}</h3>
+        <p>{copy}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

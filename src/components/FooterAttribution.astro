@@ -1,0 +1,17 @@
+---
+import { agencyAttribution, agencyAttributionUrl } from "@/data/site";
+
+const attributionUrl = agencyAttributionUrl(agencyAttribution);
+---
+
+<p class="footer-attribution">
+  Website designed &amp; developed by
+  <a
+    href={attributionUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`Visit ${agencyAttribution.agencyName} (opens in a new tab)`}
+  >
+    {agencyAttribution.agencyName}
+  </a>
+</p>

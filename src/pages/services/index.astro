@@ -1,0 +1,48 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, services, site } from "@/data/site";
+import { breadcrumbSchema } from "@/utils/seo";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "HN Architects Services",
+    url: `${site.url}/services/`,
+    primaryImageOfPage: `${site.url}${asset("hn-drive-03.webp")}`,
+    hasPart: services.map((service) => ({
+      "@type": "Service",
+      name: service.title,
+      url: `${site.url}/services/${service.slug}/`,
+    })),
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Services", url: `${site.url}/services/` },
+  ]),
+];
+---
+
+<BaseLayout title="Architecture and Interior Design Services in Islamabad | HN Architects" description="Explore HN Architects services: residential architecture, commercial architecture, interior design, exterior design, landscape, 3D visualization, renovation, turnkey projects, and consultancy." image={asset("hn-drive-03.webp")} schema={schema}>
+  <section class="page-hero">
+    <Picture src={asset("hn-drive-03.webp")} alt="Luxury villa exterior with pool by HN Architects" class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Services</p>
+      <h1 class="split-title">One studio for planning, atmosphere, visualization, and execution clarity.</h1>
+      <p>Choose a focused service or combine disciplines into a complete design journey.</p>
+    </div>
+  </section>
+  <section class="section services-grid-page">
+    {services.map((service, index) => (
+      <article class="service-card reveal-card">
+        <a href={`/services/${service.slug}/`}>
+          <Picture src={asset(service.image)} alt={`${service.title} by HN Architects`} class="service-img" />
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <h2>{service.title}</h2>
+          <p>{service.deck}</p>
+        </a>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

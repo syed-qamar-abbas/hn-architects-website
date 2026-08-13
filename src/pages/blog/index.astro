@@ -1,0 +1,41 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles, asset, site } from "@/data/site";
+import { breadcrumbSchema } from "@/utils/seo";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "HN Architects Insights",
+    url: `${site.url}/blog/`,
+    primaryImageOfPage: `${site.url}${asset("hn-drive-50.webp")}`,
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Insights", url: `${site.url}/blog/` },
+  ]),
+];
+---
+
+<BaseLayout title="Architecture and Interior Design Insights | HN Architects" description="Read SEO-focused architecture, interior design, planning, renovation, and 3D visualization insights from HN Architects in Islamabad." image={asset("hn-drive-50.webp")} schema={schema}>
+  <section class="page-hero">
+    <Picture src={asset("hn-drive-50.webp")} alt="Warm executive study interior by HN Architects" class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Insights</p>
+      <h1 class="split-title">Useful thinking for better plots, plans, interiors, and facades.</h1>
+      <p>Articles built for clients researching architects in Islamabad, luxury home design, interiors, and 3D visualization.</p>
+    </div>
+  </section>
+  <section class="section insight-grid">
+    {articles.map((article) => (
+      <article class="insight-card">
+        <Picture src={asset(article.image)} alt={article.title} class="insight-img" />
+        <span>{article.category} / {article.minutes} min read</span>
+        <h2><a href={`/blog/${article.slug}/`}>{article.title}</a></h2>
+        <p>{article.excerpt}</p>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

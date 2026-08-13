@@ -1,0 +1,130 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, projects, site } from "@/data/site";
+import { absoluteAsset, breadcrumbSchema } from "@/utils/seo";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const currentIndex = projects.findIndex((item) => item.slug === project.slug);
+const previousProject = projects[(currentIndex - 1 + projects.length) % projects.length];
+const nextProject = projects[(currentIndex + 1) % projects.length];
+const related = projects.filter((item) => item.slug !== project.slug).slice(0, 3);
+const materialText = project.materials.join(", ");
+const categoryLower = project.category.toLowerCase();
+const caseStudy = [
+  {
+    title: "Client brief",
+    copy: `This ${categoryLower} project in ${project.location} was shaped around a simple ambition: create a space that feels premium, calm, and easy to understand before construction decisions become expensive. The design brief focused on daily comfort, strong first impressions, controlled privacy, and a visual language that would still feel composed years after handover.`,
+  },
+  {
+    title: "Design response",
+    copy: `HN Architects developed the concept through proportion, circulation, material balance, and layered light. The palette uses ${materialText.toLowerCase()} to give the project depth without making it feel heavy. Each view is treated as part of the client journey, from arrival and movement to the moments where people pause, gather, work, rest, or host guests.`,
+  },
+  {
+    title: "Outcome",
+    copy: `The result is a design story that supports both lifestyle and long-term value. Visualization helped test scale, finishes, lighting, and spatial rhythm early, so the final direction could move forward with confidence. The project reflects the studio's wider approach to architecture in Islamabad: elegant planning, practical execution logic, and a restrained luxury atmosphere.`,
+  },
+];
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    creator: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName },
+    locationCreated: project.location,
+    image: absoluteAsset(project.image),
+    url: `${site.url}/projects/${project.slug}/`,
+    about: project.story,
+    keywords: [project.category, project.location, "HN Architects", "Architecture in Islamabad", ...project.materials],
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Projects", url: `${site.url}/projects/` },
+    { name: project.title, url: `${site.url}/projects/${project.slug}/` },
+  ]),
+];
+---
+
+<BaseLayout title={`${project.title} | HN Architects Portfolio`} description={`${project.story} View gallery, materials, timeline, location, and design story by HN Architects.`} image={asset(project.image)} schema={schema}>
+  <section class="page-hero project-detail-hero">
+    <Picture src={asset(project.image)} alt={`${project.title} hero image`} class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">{project.category} / {project.location}</p>
+      <h1 class="split-title">{project.title}</h1>
+      <p>{project.story}</p>
+    </div>
+  </section>
+
+  <section class="section project-overview">
+    <div>
+      <p class="eyebrow">Overview</p>
+      <h2>Design story</h2>
+      <p>{project.story} The design balances daily function with a cinematic sense of arrival, using controlled geometry, warm indirect light, and materials that age with grace.</p>
+    </div>
+    <dl>
+      <div><dt>Location</dt><dd>{project.location}</dd></div>
+      <div><dt>Timeline</dt><dd>{project.timeline}</dd></div>
+      <div><dt>Category</dt><dd>{project.category}</dd></div>
+    </dl>
+  </section>
+
+  <section class="section case-study-grid">
+    <div>
+      <p class="eyebrow">Case study</p>
+      <h2>Planning, material, and atmosphere.</h2>
+    </div>
+    <div class="case-study-copy">
+      {caseStudy.map((section) => (
+        <article>
+          <h3>{section.title}</h3>
+          <p>{section.copy}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section project-gallery">
+    {project.gallery.map((image, index) => (
+      <Picture src={asset(image)} alt={`${project.title} gallery image ${index + 1}`} class={`gallery-img ${index === 0 ? "wide" : ""}`} />
+    ))}
+  </section>
+
+  <section class="section project-overview before-after">
+    <div>
+      <p class="eyebrow">Before / After</p>
+      <h2>From uncertainty to design confidence.</h2>
+      <p>HN Architects uses careful planning and visualization to reveal facade balance, circulation issues, material choices, and wasted space before construction makes them expensive.</p>
+    </div>
+    <Picture src={asset("hn-drive-56.webp")} alt="Modern residential visualization by HN Architects" class="reveal-image" />
+  </section>
+
+  <section class="section material-list">
+    <div>
+      <p class="eyebrow">Materials</p>
+      <h2>Palette</h2>
+    </div>
+    <ul>
+      {project.materials.map((material) => <li>{material}</li>)}
+    </ul>
+  </section>
+
+  <section class="section related-services">
+    <div class="section-heading">
+      <p class="eyebrow">Related projects</p>
+      <h2>More from the portfolio.</h2>
+    </div>
+    <div class="related-grid">
+      {related.map((item) => <a href={`/projects/${item.slug}/`}>{item.title}<span>{item.location}</span></a>)}
+    </div>
+  </section>
+
+  <nav class="section project-nav" aria-label="Project navigation">
+    <a href={`/projects/${previousProject.slug}/`}><span>Previous</span>{previousProject.title}</a>
+    <a href="/contact/"><span>Start</span>Discuss your project</a>
+    <a href={`/projects/${nextProject.slug}/`}><span>Next</span>{nextProject.title}</a>
+  </nav>
+</BaseLayout>

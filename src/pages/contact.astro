@@ -1,0 +1,79 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { asset, site } from "@/data/site";
+import { breadcrumbSchema, localBusinessSchema } from "@/utils/seo";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact HN Architects",
+    url: `${site.url}/contact/`,
+  },
+  localBusinessSchema(),
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Contact", url: `${site.url}/contact/` },
+  ]),
+];
+---
+
+<BaseLayout title="Contact HN Architects | Book an Architecture Consultation in Islamabad" description="Contact HN Architects in DHA II Islamabad for residential architecture, interior design, exterior design, 3D visualization, renovation, and design consultancy." image={asset("hn-drive-71.webp")} schema={schema}>
+  <section class="page-hero contact-hero">
+    <Picture src={asset("hn-drive-71.webp")} alt="Grand residential villa at dusk by HN Architects" class="page-hero-img" loading="eager" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h1 class="split-title">Start before the design becomes expensive to fix.</h1>
+      <p>Send your plot size, location, drawings if available, and the lifestyle or business goal behind the project.</p>
+    </div>
+  </section>
+
+  <section class="section contact-layout">
+    <div class="contact-details">
+      <p class="eyebrow">Islamabad office</p>
+      <h2>{site.address}</h2>
+      <a href={site.whatsapp}>WhatsApp {site.phone}</a>
+      <a href={`tel:${site.phone.replaceAll(" ", "")}`}>{site.phone}</a>
+      <a href={`tel:${site.phoneAlt.replaceAll(" ", "")}`}>{site.phoneAlt}</a>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="map-frame" aria-label="Map location">
+        <iframe title="HN Architects office map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Orchid%20Road%20Sector%20A%20DHA%20II%20Islamabad&output=embed"></iframe>
+      </div>
+    </div>
+    <form class="inquiry-form" action="/contact-handler.php" method="post" data-contact-form>
+      <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" />
+      <label>
+        Name
+        <input required name="name" type="text" placeholder="Your name" />
+      </label>
+      <label>
+        Phone or WhatsApp
+        <input required name="phone" type="tel" placeholder="+92..." />
+      </label>
+      <label>
+        Project type
+        <select name="project_type" required>
+          <option value="">Select one</option>
+          <option>Residential Architecture</option>
+          <option>Commercial Architecture</option>
+          <option>Interior Design</option>
+          <option>Exterior Design</option>
+          <option>3D Visualization</option>
+          <option>Renovation</option>
+          <option>Design Consultancy</option>
+        </select>
+      </label>
+      <label>
+        Plot or location
+        <input name="location" type="text" placeholder="DHA, Bahria, Islamabad..." />
+      </label>
+      <label class="full">
+        Brief
+        <textarea required name="message" rows="6" placeholder="Tell us what you want to design, build, renovate, or visualize."></textarea>
+      </label>
+      <button class="button magnetic" type="submit">Send inquiry</button>
+      <p class="form-note" data-form-note>Typical response: within one business day.</p>
+    </form>
+  </section>
+</BaseLayout>

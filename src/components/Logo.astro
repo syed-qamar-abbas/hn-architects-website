@@ -1,0 +1,11 @@
+---
+const { tone = "dark" } = Astro.props;
+---
+
+<a class={`brand-mark ${tone}`} href="/" aria-label="HN Architects home">
+  <picture>
+    <source srcset="/assets/portfolio/hn-logo.avif" type="image/avif" />
+    <source srcset="/assets/portfolio/hn-logo-small.webp 320w, /assets/portfolio/hn-logo.webp 720w" type="image/webp" sizes="160px" />
+    <img src="/assets/portfolio/hn-logo.webp" alt="Hassan Nawaz Architects" loading="eager" decoding="async" />
+  </picture>
+</a>

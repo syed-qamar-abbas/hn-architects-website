@@ -1,0 +1,154 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles, asset, site } from "@/data/site";
+import { absoluteAsset, breadcrumbSchema } from "@/utils/seo";
+
+export function getStaticPaths() {
+  return articles.map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const sectionIds = article.sections.map(([heading]) => heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
+const relatedArticles = articles.filter((item) => item.slug !== article.slug).slice(0, 3);
+const articleBody = [
+  article.summary,
+  ...article.keyTakeaways,
+  ...article.sections.flatMap(([, copy]) => [copy]),
+  ...article.faqs.flatMap(([question, answer]) => [question, answer]),
+].join(" ");
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.excerpt,
+    image: absoluteAsset(article.image),
+    author: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName, url: `${site.url}/about/` },
+    publisher: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName },
+    mainEntityOfPage: `${site.url}/blog/${article.slug}/`,
+    datePublished: article.updated,
+    dateModified: article.updated,
+    articleSection: article.category,
+    wordCount: articleBody.split(/\s+/).length,
+    articleBody,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: article.faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  },
+  breadcrumbSchema([
+    { name: "Home", url: site.url },
+    { name: "Insights", url: `${site.url}/blog/` },
+    { name: article.title, url: `${site.url}/blog/${article.slug}/` },
+  ]),
+];
+---
+
+<BaseLayout title={`${article.title} | HN Architects`} description={article.excerpt} image={asset(article.image)} schema={schema}>
+  <article class="article-page">
+    <header class="page-hero">
+      <Picture src={asset(article.image)} alt={article.title} class="page-hero-img" loading="eager" sizes="100vw" />
+      <div>
+        <p class="eyebrow">{article.category} / {article.minutes} min read / Updated {article.updated}</p>
+        <h1 class="split-title">{article.title}</h1>
+        <p>{article.excerpt}</p>
+      </div>
+    </header>
+    <div class="article-shell">
+      <aside class="article-toc" aria-label="Table of contents">
+        <p class="eyebrow">Contents</p>
+        {article.sections.map(([heading], index) => <a href={`#${sectionIds[index]}`}>{String(index + 1).padStart(2, "0")} {heading}</a>)}
+        <a href="#faq">FAQ</a>
+      </aside>
+      <div class="article-body premium-article">
+        <section class="answer-card">
+          <p class="eyebrow">Quick answer</p>
+          <p>{article.summary}</p>
+        </section>
+
+        <section class="takeaway-grid" aria-label="Key takeaways">
+          {article.keyTakeaways.map((takeaway, index) => (
+            <div>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p>{takeaway}</p>
+            </div>
+          ))}
+        </section>
+
+        {article.sections.map(([heading, copy], index) => (
+          <section id={sectionIds[index]} class="article-section">
+            <h2>{heading}</h2>
+            <p>{copy}</p>
+          </section>
+        ))}
+
+        <section class="article-framework">
+          <p class="eyebrow">Decision framework</p>
+          <h2>What to verify before approval.</h2>
+          <div class="framework-table" role="table" aria-label="Decision framework">
+            <div role="row">
+              <strong role="columnheader">Decision</strong>
+              <strong role="columnheader">What to check</strong>
+              <strong role="columnheader">Why it matters</strong>
+            </div>
+            {article.keyTakeaways.map((takeaway) => (
+              <div role="row">
+                <span role="cell">{takeaway}</span>
+                <span role="cell">Ask for drawings, visual proof, material direction, and a clear design reason before signing off.</span>
+                <span role="cell">Clear approvals reduce rework, protect budget, and keep the final space aligned with the original design intent.</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="article-visuals">
+          <div>
+            <p class="eyebrow">Project references</p>
+            <h2>Visual context from HN Architects projects.</h2>
+          </div>
+          <div class="article-visual-grid">
+            {article.visuals.map((image, index) => (
+              <figure>
+                <Picture src={asset(image)} alt={`${article.title} visual reference ${index + 1} by HN Architects`} sizes="(min-width: 900px) 24vw, 78vw" />
+                <figcaption>{article.category} reference {String(index + 1).padStart(2, "0")}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section class="article-method">
+          <p class="eyebrow">Who, how, why</p>
+          <p>This guide is prepared by HN Architects from studio experience with architecture, interiors, facades, visualization, and client consultation in Islamabad and Rawalpindi. It is written to help clients make clearer design decisions before construction begins.</p>
+        </section>
+
+        <section id="faq" class="article-faq">
+          <p class="eyebrow">FAQ</p>
+          {article.faqs.map(([question, answer]) => (
+            <details>
+              <summary>{question}</summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </section>
+
+        <section class="related-articles">
+          <div class="section-heading compact">
+            <p class="eyebrow">Related reading</p>
+            <h2>Continue with useful decisions.</h2>
+          </div>
+          <div class="related-grid">
+            {relatedArticles.map((item) => <a href={`/blog/${item.slug}/`}>{item.title}<span>{item.category}</span></a>)}
+          </div>
+        </section>
+
+        <a class="button magnetic" href="/contact/">Discuss your project</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

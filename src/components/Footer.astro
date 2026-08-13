@@ -1,0 +1,37 @@
+---
+import FooterAttribution from "./FooterAttribution.astro";
+import Logo from "./Logo.astro";
+import { services, site } from "@/data/site";
+---
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <Logo tone="light" />
+      <p>{site.tagline}</p>
+      <a class="footer-whatsapp magnetic" href={site.whatsapp}>WhatsApp {site.phone}</a>
+    </div>
+    <div>
+      <h2>Studio</h2>
+      <a href="/about/">About</a>
+      <a href="/projects/">Projects</a>
+      <a href="/blog/">Insights</a>
+      <a href="/contact/">Contact</a>
+    </div>
+    <div>
+      <h2>Services</h2>
+      {services.slice(0, 7).map((service) => <a href={`/services/${service.slug}/`}>{service.title}</a>)}
+    </div>
+    <div>
+      <h2>Islamabad Office</h2>
+      <p>{site.address}</p>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={`tel:${site.phone.replaceAll(" ", "")}`}>{site.phone}</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; {new Date().getFullYear()} HN Architects</span>
+    <span>Warmth. Depth. Balance. Timeless.</span>
+  </div>
+  <FooterAttribution />
+</footer>

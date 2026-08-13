@@ -1,0 +1,325 @@
+---
+import Picture from "@/components/Picture.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles, asset, faqs, homeShowcase, processSteps, projects, services, stats, ticker, valueProps } from "@/data/site";
+import { localBusinessSchema } from "@/utils/seo";
+
+const schema = [
+  localBusinessSchema(),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  },
+];
+
+const whyReasons = [
+  ["Plot logic", "Sun, privacy, access, bylaws."],
+  ["Quiet luxury", "Warm light, rich materials."],
+  ["3D clarity", "See before you build."],
+  ["One studio", "Concept to handover."],
+];
+
+const whyVisuals = [
+  ["Warm material calm", "hn-drive-26.webp", "/projects/warm-hearth-interior/"],
+  ["Signature villas", "hn-drive-62.webp", "/projects/orchid-estate-villa/"],
+  ["Refined workspaces", "hn-drive-45.webp", "/projects/skyline-executive-office/"],
+];
+
+const heroSocials = [
+  ["instagram", "Instagram", "https://www.instagram.com/hnarchitects_official"],
+  ["facebook", "Facebook", "https://www.facebook.com/p/Hnarchitects-61586664846530/"],
+];
+
+---
+
+<BaseLayout
+  title="HN Architects | Luxury Architects and Interior Designers in Islamabad"
+  description="HN Architects is a premium Islamabad studio for residential architecture, luxury interiors, exterior design, 3D visualization, space planning, and design consultancy."
+  image={asset("hn-home-hero-2026.webp")}
+  preloadImage={asset("hn-home-hero-2026.webp")}
+  schema={schema}
+>
+  <section class="hero exhibition-hero">
+    <Picture src={asset("hn-home-hero-2026.webp")} alt="Orange architectural arrival court with reflecting water by HN Architects" class="hero-media home-hero-media" loading="eager" fetchpriority="high" sizes="100vw" width={1800} height={1013} />
+    <div class="hero-shade"></div>
+    <div class="hero-social-rail" aria-label="HN Architects social links">
+      {heroSocials.map(([icon, label, href]) => (
+        <a href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
+          {icon === "instagram" ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="5" />
+              <circle cx="12" cy="12" r="3.5" />
+              <circle cx="17" cy="7" r="1" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 8h2V4h-3c-3 0-5 2-5 5v2H6v4h2v5h4v-5h3l1-4h-4V9c0-.6.4-1 1-1h1Z" />
+            </svg>
+          )}
+        </a>
+      ))}
+    </div>
+    <div class="hero-content">
+      <p class="eyebrow">Architecture studio<br />Islamabad &amp; Rawalpindi</p>
+      <h1 class="hero-title reveal-card">Designing spaces, <em>defining experiences.</em></h1>
+      <p class="hero-copy hero-copy-desktop">Luxury homes, interiors, facades, and 3D visualisation shaped with clarity from concept to handover.</p>
+      <p class="hero-copy hero-copy-mobile">Architecture, interiors, and visualization in Islamabad.</p>
+      <div class="hero-actions">
+        <a class="button magnetic" href="/contact/">Book consultation <span aria-hidden="true">&rarr;</span></a>
+        <a class="ghost-link" href="/services/">Explore services <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <span>Architecture</span>
+      <span>Interiors</span>
+      <span>Visualization</span>
+    </div>
+    <div class="hero-proof" aria-label="HN Architects studio highlights">
+      <span><strong>150+</strong> Projects</span>
+      <span><strong>11</strong> Services</span>
+      <span><strong>DHA II</strong> Islamabad</span>
+    </div>
+  </section>
+
+  <section class="value-strip">
+    {valueProps.map(([title, copy, path]) => (
+      <div class="value-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={path} stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <h3>{title}</h3>
+        <p>{copy}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="section why-choice">
+    <div class="why-choice-copy">
+      <p class="eyebrow">Why HN Architects</p>
+      <h2 class="reveal-lines">Luxury with clarity, not excess.</h2>
+      <p>We shape homes, interiors, and facades with calm planning, refined materials, and decisions you can see before you build.</p>
+      <div class="why-reason-grid">
+        {whyReasons.map(([title, copy], index) => (
+          <article class="why-reason reveal-card">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </article>
+        ))}
+      </div>
+      <div class="why-choice-actions">
+        <a class="button magnetic" href="/about/">Meet the studio</a>
+        <a class="ghost-link" href="/contact/">Ask for guidance</a>
+      </div>
+    </div>
+    <div class="why-choice-gallery" aria-label="HN Architects luxury project preview">
+      {whyVisuals.map(([label, image, href], index) => (
+        <a class={`why-choice-card why-choice-card-${index + 1}`} href={href}>
+          <Picture src={asset(image)} alt={`${label} by HN Architects`} sizes="(min-width: 900px) 24vw, 78vw" />
+          <span>{label}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section luxury-editorial">
+    <div>
+      <p class="eyebrow">Visual language</p>
+      <h2>Luxury through light, material, and atmosphere.</h2>
+      <p>Across villas, interiors, offices, and hospitality spaces, we keep proportions calm, lighting warm, and details restrained.</p>
+      <a class="ghost-link" href="/projects/">See the full archive</a>
+    </div>
+    <div class="editorial-collage">
+      {homeShowcase.slice(0, 5).map(([title, category, image, href], index) => (
+        <a class={`editorial-frame frame-${index + 1}`} href={href}>
+          <Picture src={asset(image)} alt={`${title} ${category} by HN Architects`} sizes="(min-width: 900px) 28vw, 92vw" />
+          <span>{category}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section services-preview">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Design disciplines</p>
+        <h2>From plot logic to finished atmosphere.</h2>
+      </div>
+      <a href="/services/">All services</a>
+    </div>
+    <div class="service-cards">
+      {services.slice(0, 6).map((service, index) => (
+        <a class="svc-card" href={`/services/${service.slug}/`}>
+          <Picture src={asset(service.image)} alt={`${service.title} by HN Architects`} sizes="(min-width: 900px) 30vw, 92vw" />
+          <div class="svc-card-body">
+            <div>
+              <small>{String(index + 1).padStart(2, "0")}</small>
+              <h3>{service.title}</h3>
+            </div>
+            <span class="svc-card-arrow" aria-hidden="true">&rarr;</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[...ticker, ...ticker].map((word) => (
+        <span>{word}<b>&nbsp;&#10022;&nbsp;</b></span>
+      ))}
+    </div>
+  </div>
+
+  <section class="section featured-projects">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Featured projects</p>
+        <h2>Architecture told through proportion, shadow, and restraint.</h2>
+      </div>
+      <a href="/projects/">Explore all projects</a>
+    </div>
+    <div class="project-ribbon">
+      {projects.slice(0, 8).map((project, index) => (
+        <article class="project-card reveal-card">
+          <a href={`/projects/${project.slug}/`}>
+            <Picture src={asset(project.image)} alt={`${project.title} by HN Architects`} class="project-img" sizes="(min-width: 900px) 32vw, 84vw" />
+            <div>
+              <span>{String(index + 1).padStart(2, "0")} / {project.category}</span>
+              <h3>{project.title}</h3>
+              <p>{project.location}</p>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section visual-archive-preview">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Curated archive</p>
+        <h2>More of the studio's visual range, across the whole website.</h2>
+      </div>
+      <a href="/projects/">All 71 visuals</a>
+    </div>
+    <div class="archive-preview-grid">
+      {homeShowcase.map(([title, category, image, href]) => (
+        <a class="archive-tile reveal-card" href={href}>
+          <Picture src={asset(image)} alt={`${title} by HN Architects`} class="archive-img" sizes="(min-width: 900px) 18vw, 45vw" />
+          <span>{category}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="statement-band">
+    <Picture src={asset("hn-drive-67.webp")} alt="Long modern louvered villa at twilight by HN Architects" class="statement-img" sizes="100vw" />
+    <span class="statement-ring" aria-hidden="true"></span>
+    <span class="statement-url">www.hnarchitects.com</span>
+    <div class="statement-inner">
+      <h2 class="statement-title">Bringing life to the realm</h2>
+      <p class="statement-sub">Exterior&nbsp;&nbsp;/&nbsp;&nbsp;Interior</p>
+    </div>
+  </section>
+
+  <section class="section why-section">
+    <Picture src={asset("hn-drive-48.webp")} alt="Luxury lounge and fireplace interior by HN Architects" class="why-image reveal-image" sizes="(min-width: 900px) 45vw, 92vw" />
+    <div>
+      <p class="eyebrow">Why HN Architects</p>
+      <h2>We turn uncertainty into a buildable design story.</h2>
+      <p>Clients come to HN Architects when average planning will not work: tight plots, lifestyle-specific homes, premium interiors, and facades that need identity without visual clutter. One team carries the design from plot study to handover.</p>
+      <a class="ghost-link" href="/about/">Meet the studio</a>
+    </div>
+  </section>
+
+  <section class="section stats-band">
+    <div class="stats-row">
+      {stats.map(([value, label]) => (
+        <div class="stat-item reveal-card">
+          <strong>{value}</strong>
+          <span>{label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section process">
+    <div class="section-heading compact">
+      <p class="eyebrow">Process</p>
+      <h2>A calm sequence for serious decisions.</h2>
+    </div>
+    <div class="process-grid">
+      {processSteps.map(([number, title, copy]) => (
+        <article class="process-card reveal-card">
+          <span>{number}</span>
+          <h3>{title}</h3>
+          <p>{copy}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section split-showcase">
+    <div>
+      <p class="eyebrow">Before / After</p>
+      <h2>Same plot. Different outcome.</h2>
+      <p>Strong planning prevents wasted square footage, poor ventilation, weak facades, and expensive regret. HN Architects uses visualization to make those decisions visible before you build.</p>
+      <a class="button magnetic" href="/services/renovation/">Explore renovation</a>
+    </div>
+    <Picture src={asset("hn-drive-56.webp")} alt="Poolside modern villa transformation by HN Architects" class="reveal-image" sizes="(min-width: 900px) 50vw, 92vw" />
+  </section>
+
+  <section class="section testimonials">
+    <div class="testimonial-track" aria-label="Client comments">
+        {[
+          ["HN Architects helped us understand what our plot could become before we committed to construction.", "Private client", "DHA Islamabad"],
+          ["The 3D views made every family decision easier. We could see light, finishes, and proportions clearly.", "Homeowner", "Bahria Town"],
+          ["The final design felt premium without feeling overdone. That restraint is exactly what we wanted.", "Private client", "Blue Area"],
+        ].map(([quote, name, place]) => (
+          <blockquote class="testimonial-card">
+            <p>{quote}</p>
+            <cite>
+              <span class="testimonial-avatar">{name.split(" ").map((w) => w[0]).join("")}</span>
+              <span class="testimonial-cite-text">
+                <b>{name}</b>
+                <span>{place}</span>
+              </span>
+            </cite>
+          </blockquote>
+        ))}
+    </div>
+  </section>
+
+  <section class="section insights">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Latest insights</p>
+        <h2>Useful thinking before you design or build.</h2>
+      </div>
+      <a href="/blog/">Read the journal</a>
+    </div>
+    <div class="insight-grid">
+      {articles.map((article) => (
+        <article class="insight-card reveal-card">
+          <Picture src={asset(article.image)} alt={article.title} class="insight-img" sizes="(min-width: 900px) 30vw, 92vw" />
+          <span>{article.category} / {article.minutes} min</span>
+          <h3><a href={`/blog/${article.slug}/`}>{article.title}</a></h3>
+          <p>{article.excerpt}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="contact-band">
+    <Picture src={asset("hn-drive-71.webp")} alt="Grand estate residence at dusk by HN Architects" class="contact-band-img" sizes="100vw" />
+    <div>
+      <p class="eyebrow">Start with clarity</p>
+      <h2>Book a consultation before the plot becomes a compromise.</h2>
+      <a class="button magnetic" href="/contact/">Message now</a>
+    </div>
+  </section>
+</BaseLayout>
